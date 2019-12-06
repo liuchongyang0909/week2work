@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuchongyang.dao.GoodsDao">
+	<insert id="insertGoodsByTxt">
+		insert into goods (gid,gname,price,sales) values
+		<foreach collection="list" item="g" separator=",">
+			(#{g.gid}, #{g.gname}, #{g.price}, #{g.sales})
+		</foreach>
+	</insert>
+
+	<select id="getGoodsList" resultType="goods">
+		select * from goods
+		<where>
+			<if test="lowPrice != null">
+				price >= #{lowPrice}
+			</if>
+			<if test="heightPrice != null">
+				and price &lt;= #{heightPrice}
+			</if>
+			<if test="lowSales != null">
+				and sales >= #{lowSales}
+			</if>
+			<if test="heightSales != null">
+				and sales &lt;= #{heightSales}
+			</if>
+		</where>
+		<if test="(orderName != null and orderName != '') and (orderMethod != null and orderMethod != '')">
+			order by ${orderName} ${orderMethod}
+		</if>
+	</select>
+</mapper>
